@@ -1,5 +1,5 @@
 from config import PASSENGER_FORMS, CUMUL_PROBA_PASSENGER_FORMS
-from tool_functions import set_random_form
+from util_functions import set_random_form
 
 
 class Passenger:

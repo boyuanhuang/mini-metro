@@ -3,7 +3,14 @@ import pygame
 from pygame.locals import QUIT
 
 # Initialise screen
+from engine.map import Map
+
 pygame.init()
+
+# todo display Map
+m = Map()
+
+
 screen = pygame.display.set_mode((600, 480))
 pygame.display.set_caption('Basic Pygame program')
 
