@@ -1,10 +1,8 @@
 import random
 
-from config import STATION_FORMS, CUMUL_PROBA_STATION_FORMS, STATION_CAPACITY
+import config
 from engine.util_functions import set_random_form
-from passenger import Passenger
-from engine.metroline import MetroLine
-from config import MAP_LEVEL
+from engine.passenger import Passenger
 
 
 class Map:
@@ -12,10 +10,10 @@ class Map:
     def __init__(self):
         # Display
         self.map_level = 1
-        self.metrolines: list[MetroLine] = None
+        self.metrolines: list[MetroLine] = []
         self.stations: list[Station] = []
         self.station_amount = 0
-        self.waterzone = None
+        self.waterzone = config.WATERZONE
 
         # Timer and counter
         self.timer = None
@@ -35,10 +33,10 @@ class Map:
         self.map_level += 1
 
     def random_position(self):
-        max_height, max_width = MAP_LEVEL[self.map_level]
-        position = (random.uniform(0, max_height), random.uniform(0, max_width))
+        max_x, max_y = config.MAP_LEVEL[self.map_level]
+        position = (random.uniform(0, max_x), random.uniform(0, max_y))
         while position in self.waterzone:  # todo implement 'in' condition
-            position = (random.uniform(0, max_height), random.uniform(0, max_width))
+            position = (random.uniform(0, max_x), random.uniform(0, max_y))
         return position
 
 
@@ -47,9 +45,9 @@ class Station:
     def __init__(self, id_, position):
         self.id = id_
         self.position = position
-        self.form = set_random_form(STATION_FORMS, CUMUL_PROBA_STATION_FORMS)
+        self.form = set_random_form(config.STATION_FORMS, config.CUMUL_PROBA_STATION_FORMS)
         self.type = 'Normal'
-        self.capacity = STATION_CAPACITY[self.type]
+        self.capacity = config.STATION_CAPACITY[self.type]
         self.timer = None
         self.passengers = []
         self.attached_metrolines = []
@@ -64,7 +62,18 @@ class Station:
 
     def change_station_type(self, type_):
         self.type = type_
-        self.capacity = STATION_CAPACITY[self.type]
+        self.capacity = config.STATION_CAPACITY[self.type]
+
+
+class MetroLine:
+
+    def __init__(self):
+        self.id = None
+        self.first_station: Station = None
+        self.last_station: Station = None
+        self.is_circular = (self.first_station.id == self.last_station.id)  # may be not useful ??
+
+    def connect_to(self):
 
 
 if __name__ == '__main__':
