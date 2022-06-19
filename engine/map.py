@@ -11,7 +11,7 @@ class Map:
         # Display
         self.map_level = 1
         self.metrolines: list[MetroLine] = []
-        self.stations: list[Station] = []
+        self.stations: dict = {}  # {station_id: Station}
         self.station_amount = 0
         self.waterzone = config.WATERZONE
 
@@ -27,7 +27,7 @@ class Map:
 
     def generate_station(self):
         self.station_amount += 1
-        self.stations.append(Station(id_=self.station_amount, position=self.random_position()))
+        self.stations[self.station_amount] = Station(station_id=self.station_amount, position=self.random_position())
 
     def zoom_out(self):
         self.map_level += 1
@@ -39,11 +39,15 @@ class Map:
             position = (random.uniform(0, max_x), random.uniform(0, max_y))
         return position
 
+    def get_station(self, id):
+        return self.stations[id]
 
-class Station:
 
-    def __init__(self, id_, position):
-        self.id = id_
+class Station(Map):
+
+    def __init__(self, station_id, position):
+        super().__init__()
+        self.station_id = station_id
         self.position = position
         self.form = set_random_form(config.STATION_FORMS, config.CUMUL_PROBA_STATION_FORMS)
         self.type = 'Normal'
@@ -51,8 +55,8 @@ class Station:
         self.timer = None
         self.passengers = []
         self.attached_metrolines = []
-        self.next_stations = dict()  # ex : {1: Station1, 2: Station 2, ... }
-        self.previous_stations = dict()  # ex : {1: Station1, 2: Station 2, ... }
+        self.next_stations = dict()  # {metroline_id: Station_id}
+        self.previous_stations = dict()  # {metroline_id: Station_id}
 
     def create_passenger(self):
         self.passengers.append(Passenger())
@@ -65,15 +69,54 @@ class Station:
         self.capacity = config.STATION_CAPACITY[self.type]
 
 
-class MetroLine:
+class MetroLine(Map):
 
     def __init__(self):
-        self.id = None
-        self.first_station: Station = None
-        self.last_station: Station = None
-        self.is_circular = (self.first_station.id == self.last_station.id)  # may be not useful ??
+        super().__init__()
+        self.metroline_id = None
+        self.head_station_id: int = -1
+        self.end_station_id: int = -1
+        self.is_circular = (self.head_station_id == self.end_station_id)  # may be not useful ??
 
-    def connect_to(self):
+        self.stations = []  # [stations id]
+
+        # Trains on this Metroline
+        self.trains = []  # [Train1, Train2, ...]
+
+    def extend_head_to(self, station_id):
+        # Update connected Station's properties :
+        connected_station = self.get_station(station_id)
+        connected_station.next_stations[self.metroline_id] = self.stations[0]
+        # Update stations list
+        self.stations = [station_id] + self.stations
+
+    def extend_end_to(self, station_id):
+        # Update connected Station's properties :
+        connected_station = self.get_station(station_id)
+        connected_station.previous_stations[self.metroline_id] = self.stations[0]
+        # Update stations list
+        self.stations = [station_id] + self.stations
+
+    def remove_station(self, station_id):
+        # Update connected Station's properties :
+        station_to_remove = self.get_station(station_id)
+
+        flag_is_middle = True
+
+        if station_id == self.head_station_id:
+            del station_to_remove.next_stations[self.metroline_id]
+            self.stations.remove(station_id)
+            flag_is_middle = False
+
+        if station_id == self.end_station_id:
+            del station_to_remove.previous_stations[self.metroline_id]
+            self.stations.remove(station_id)
+            flag_is_middle = False
+
+        if flag_is_middle:
+            del station_to_remove.next_stations[self.metroline_id]
+            del station_to_remove.previous_stations[self.metroline_id]
+            self.stations.remove(station_id)
 
 
 if __name__ == '__main__':
