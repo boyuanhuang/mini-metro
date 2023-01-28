@@ -14,7 +14,11 @@ class Station():
         self.timer = None
         self.passengers = []
         self.attached_metrolines = []
+
+        # A station may have several next-stations connected by different metrolines
         self.next_stations = dict()  # {metroline_id: Station_id}
+
+        # A station may have several previous-stations connected by different metrolines
         self.previous_stations = dict()  # {metroline_id: Station_id}
 
     def create_passenger(self):

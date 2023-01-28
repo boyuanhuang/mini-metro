@@ -21,6 +21,7 @@ CARRIAGE_CARRIAGE_CAPACITY = 6
 TRAIN_SPEED = 10
 
 # Station parameters
+INITIAL_STATION_AMOUNT = 3
 STATION_FORMS = {'circle': 0.6, 'triangle': 0.2, 'square': 0.2}
 STATION_CAPACITY = {'Normal': 20, 'Interchange': 30}
 

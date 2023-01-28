@@ -5,17 +5,24 @@ import numpy as np
 import config
 from station import Station
 from metroline import MetroLine
-
+from shapely.geometry import Point
 
 class Map:
 
     def __init__(self):
-        # Display
+        ## Display
         self.map_level = 1
+        # Set waterzone
+        self.waterzone = config.WATERZONE
+
+        # Inialize metrolines
         self.metrolines: list[MetroLine] = []
+
+        # Initialize stations
         self.stations: dict = {}  # {station_id: Station}
         self.station_amount = 0
-        self.waterzone = config.WATERZONE
+        while self.station_amount < config.INITIAL_STATION_AMOUNT:
+            self.generate_station()
 
         # Timer and counter
         self.timer = None
@@ -35,6 +42,8 @@ class Map:
         self.distance_matrix = self.update_distance_matrix()
 
         # Tool
+
+
         # todo
 
     def display(self):
@@ -50,7 +59,8 @@ class Map:
     def random_position(self):
         max_x, max_y = config.MAP_LEVEL[self.map_level]
         position = (random.uniform(0, max_x), random.uniform(0, max_y))
-        while position in self.waterzone:  # todo implement 'in' condition
+        position_point = Point(position)
+        while self.waterzone.contains(position_point):  # todo implement 'in' condition
             position = (random.uniform(0, max_x), random.uniform(0, max_y))
         return position
 
@@ -62,7 +72,7 @@ class Map:
         self.train_amount += 1
 
     def receive_new_metroline(self):
-        self.metrolines.append(MetroLine(len(self.metrolines)) + 1)
+        self.metrolines.append(MetroLine(len(self.metrolines) + 1))
         self.metroline_amount += 1
 
     def receive_new_tunnel(self):
@@ -90,12 +100,18 @@ class Map:
     def update_distance_matrix(self):
         distance_matrix = [[np.inf for _ in range(self.station_amount)]]
         for station_id in self.stations.keys():
-            todo
+            current_station = self.get_station(station_id)
+            stations_one_edge_way = list(current_station.next_stations.values()) + list(current_station.previous_stations.values())
+            while stations_one_edge_way:
+                id = stations_one_edge_way.pop()
+                distance_matrix[stations_one_edge_way][id] = 1
+
 
         return distance_matrix
 
 
 if __name__ == '__main__':
-    map = Map()
+    print()
+    #map = Map()
     print(1)
     print()

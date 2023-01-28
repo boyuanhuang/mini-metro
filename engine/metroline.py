@@ -1,4 +1,3 @@
-from map import Map
 
 
 class MetroLine():

@@ -25,20 +25,20 @@ def print_solution(distance):
         print(" ")
 
 # # The number of vertices
-# nV = 4
-#
-# INF = 999
-#
-# G = [[0, 3, INF, 5],
-#      [2, 0, INF, 4],
-#      [INF, 1, 0, INF],
-#      [INF, INF, 2, 0]]
-#
-# floyd_warshall(G)
+nV = 4
+
+INF = 999
+
+G = [[0, 3, INF, 5],
+     [2, 0, INF, 4],
+     [INF, 1, 0, INF],
+     [INF, INF, 2, 0]]
+
+floyd_warshall(G)
 
 
 if __name__ == '__main__':
 
     d = {1:2, 2:3}
-    for key, val in d:
+    for key, val in d.items():
         print(key, val)
