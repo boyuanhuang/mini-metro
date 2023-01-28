@@ -1,11 +1,11 @@
-from config import PASSENGER_FORMS, CUMUL_PROBA_PASSENGER_FORMS
+import config
 from util_functions import set_random_form
 
 
 class Passenger:
 
     def __init__(self):
-        self.form = set_random_form(PASSENGER_FORMS, CUMUL_PROBA_PASSENGER_FORMS)
+        self.form = set_random_form(config.PASSENGER_FORMS)
 
 
 if __name__ == '__main__':

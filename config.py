@@ -6,11 +6,18 @@ MAP_LEVEL = {1: (300, 200), 2: (400, 300), 3: (700, 500), 4: (900, 700)}
 outer = Polygon(((0, 100), (600, 100), (700, 500), (900, 500), (900, 550), (300, 550), (100, 150), (0, 150), (0, 100)))
 island = Polygon(((250, 150), (450, 150), (650, 500), (450, 500), (250, 150)))
 
-# Passenger parameters
+## Widget
+INITIAL_TUNNEL_AMOUNT = 2
+INITIAL_METROLINE_AMOUNT = 3
+INITIAL_TRAIN_AMOUNT = 3
+INITIAL_CARRIAGE_AMOUNT = 0
+
+## Passenger parameters
+# Passenger form probabilities
 PASSENGER_FORMS = {'circle': 0.6, 'triangle': 0.2, 'square': 0.2}
 
 # Train parameters
-TRAIN_CARRIAGE_CAPACITY = 6
+CARRIAGE_CARRIAGE_CAPACITY = 6
 TRAIN_SPEED = 10
 
 # Station parameters
@@ -18,20 +25,17 @@ STATION_FORMS = {'circle': 0.6, 'triangle': 0.2, 'square': 0.2}
 STATION_CAPACITY = {'Normal': 20, 'Interchange': 30}
 
 # Imputed constant
-CUMUL_PROBA_PASSENGER_FORMS = np.cumsum(list(PASSENGER_FORMS.values()))
-CUMUL_PROBA_STATION_FORMS = np.cumsum(list(STATION_FORMS.values()))
-
 
 
 # Polygon exterior:
-polygone_exterior = [(0, 100), (600, 100), (700, 500), (900, 500), (900, 550), (300, 550), (150, 150), (0, 150), (0, 100)]
+polygone_exterior = [(0, 100), (600, 100), (700, 500), (900, 500), (900, 550), (300, 550), (150, 150), (0, 150),
+                     (0, 100)]
 island = [(250, 150), (450, 150), (650, 500), (450, 500), (250, 150)]
 
 # Define interior "holes":
 interiors = {}
 interiors[0] = island
 i_p = {k: Polygon(v) for k, v in interiors.items()}
-
 
 WATERZONE = Polygon(polygone_exterior, [zone.exterior.coords for zone in i_p.values() \
                                         if zone.within(Polygon(polygone_exterior)) is True])

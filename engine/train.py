@@ -1,18 +1,18 @@
-from config import TRAIN_CARRIAGE_CAPACITY, TRAIN_SPEED
+from config import CARRIAGE_CARRIAGE_CAPACITY, TRAIN_SPEED
 
 
 class Train:
 
     def __init__(self):
         self.carriage_amount = 1
-        self.capacity = TRAIN_CARRIAGE_CAPACITY
+        self.capacity = CARRIAGE_CARRIAGE_CAPACITY
         self.passengers = []
         self.passenger_amount = 0
         self.speed = TRAIN_SPEED
 
     def add_carriage(self):
         self.carriage_amount += 1
-        self.capacity += TRAIN_CARRIAGE_CAPACITY
+        self.capacity += CARRIAGE_CARRIAGE_CAPACITY
 
     def load_passenger(self, passenger):
         self.passengers.append(passenger)

@@ -1,8 +1,10 @@
 import random
 
+import numpy as np
+
 import config
-from engine.util_functions import set_random_form
-from engine.passenger import Passenger
+from station import Station
+from metroline import MetroLine
 
 
 class Map:
@@ -18,6 +20,19 @@ class Map:
         # Timer and counter
         self.timer = None
         self.passenger_transported = 0
+        self.number_of_weeks = 1
+
+        # Widget that we dispose :
+        self.metroline_amount = 0
+        while self.metroline_amount < config.INITIAL_METROLINE_AMOUNT:
+            self.receive_new_metroline()
+
+        self.train_amount = config.INITIAL_TRAIN_AMOUNT
+        self.tunnel_amount = config.INITIAL_TUNNEL_AMOUNT
+        self.carriage_amount = config.INITIAL_CARRIAGE_AMOUNT
+
+        # Distance matrix
+        self.distance_matrix = self.update_distance_matrix()
 
         # Tool
         # todo
@@ -42,81 +57,42 @@ class Map:
     def get_station(self, id):
         return self.stations[id]
 
+    # New week arrive :
+    def receive_new_train(self):
+        self.train_amount += 1
 
-class Station(Map):
+    def receive_new_metroline(self):
+        self.metrolines.append(MetroLine(len(self.metrolines)) + 1)
+        self.metroline_amount += 1
 
-    def __init__(self, station_id, position):
-        super().__init__()
-        self.station_id = station_id
-        self.position = position
-        self.form = set_random_form(config.STATION_FORMS, config.CUMUL_PROBA_STATION_FORMS)
-        self.type = 'Normal'
-        self.capacity = config.STATION_CAPACITY[self.type]
-        self.timer = None
-        self.passengers = []
-        self.attached_metrolines = []
-        self.next_stations = dict()  # {metroline_id: Station_id}
-        self.previous_stations = dict()  # {metroline_id: Station_id}
+    def receive_new_tunnel(self):
+        self.tunnel_amount += 1
 
-    def create_passenger(self):
-        self.passengers.append(Passenger())
+    def receive_new_carriage(self):
+        self.carriage_amount += 1
 
-    def onboard_passenger(self):
-        return self.passengers.pop(0)
+    def new_week_arrive(self):
+        self.receive_new_train()
 
-    def change_station_type(self, type_):
-        self.type = type_
-        self.capacity = config.STATION_CAPACITY[self.type]
+        # todo : to be imporved, in the real game, player chooses one among 2 proposed choices
+        if self.number_of_weeks % 3 == 0:
+            self.receive_new_metroline()
+            self.receive_new_tunnel()
 
+        elif self.number_of_weeks % 3 == 1:
+            self.receive_new_metroline()
+            self.receive_new_carriage()
 
-class MetroLine(Map):
+        else:
+            self.receive_new_carriage()
+            self.receive_new_tunnel()
 
-    def __init__(self):
-        super().__init__()
-        self.metroline_id = None
-        self.head_station_id: int = -1
-        self.end_station_id: int = -1
-        self.is_circular = (self.head_station_id == self.end_station_id)  # may be not useful ??
+    def update_distance_matrix(self):
+        distance_matrix = [[np.inf for _ in range(self.station_amount)]]
+        for station_id in self.stations.keys():
+            todo
 
-        self.stations = []  # [stations id]
-
-        # Trains on this Metroline
-        self.trains = []  # [Train1, Train2, ...]
-
-    def extend_head_to(self, station_id):
-        # Update connected Station's properties :
-        connected_station = self.get_station(station_id)
-        connected_station.next_stations[self.metroline_id] = self.stations[0]
-        # Update stations list
-        self.stations = [station_id] + self.stations
-
-    def extend_end_to(self, station_id):
-        # Update connected Station's properties :
-        connected_station = self.get_station(station_id)
-        connected_station.previous_stations[self.metroline_id] = self.stations[0]
-        # Update stations list
-        self.stations = [station_id] + self.stations
-
-    def remove_station(self, station_id):
-        # Update connected Station's properties :
-        station_to_remove = self.get_station(station_id)
-
-        flag_is_middle = True
-
-        if station_id == self.head_station_id:
-            del station_to_remove.next_stations[self.metroline_id]
-            self.stations.remove(station_id)
-            flag_is_middle = False
-
-        if station_id == self.end_station_id:
-            del station_to_remove.previous_stations[self.metroline_id]
-            self.stations.remove(station_id)
-            flag_is_middle = False
-
-        if flag_is_middle:
-            del station_to_remove.next_stations[self.metroline_id]
-            del station_to_remove.previous_stations[self.metroline_id]
-            self.stations.remove(station_id)
+        return distance_matrix
 
 
 if __name__ == '__main__':

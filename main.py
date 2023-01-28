@@ -6,6 +6,7 @@ from pygame.locals import QUIT
 
 # Initialise screen
 from engine.map import Map
+# My Mac has a resolution of（2560 × 1600）
 
 pygame.init()
 
