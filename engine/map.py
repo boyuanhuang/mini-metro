@@ -1,12 +1,13 @@
-import random
-
 import numpy as np
-from engine.util_functions import floyd_warshall
+
+import random
+from shapely.geometry import Point
 
 import config
-from station import Station
+from engine.util_functions import floyd_warshall
+
 from metroline import MetroLine
-from shapely.geometry import Point
+from station import Station
 
 
 class Map:
@@ -14,6 +15,7 @@ class Map:
     def __init__(self):
         # Display
         self.map_level = 1
+
         # Set waterzone
         self.waterzone = config.WATERZONE
 
@@ -41,19 +43,18 @@ class Map:
         self.carriage_amount = config.INITIAL_CARRIAGE_AMOUNT
 
         # Distance matrix
-        self.distance_matrix = self.update_distance_matrix()
+        self.distance_matrix = None
+        self.update_distance_matrix()
 
-        # Tool
+        # Widgets # todo
 
-        # todo
-
+    # region Game interface display
     def display(self):
         pass
 
-    def generate_station(self):
-        self.stations[self.station_amount] = Station(station_id=self.station_amount, position=self.random_position())
-        self.station_amount += 1
+    # endregion
 
+    # region Methods for map
     def zoom_out(self):
         self.map_level += 1
 
@@ -66,13 +67,48 @@ class Map:
             position_point = Point(position)
         return position
 
+    def update_distance_matrix(self):
+        # Initialize distance matrix
+        distance_matrix: list = [[np.inf for _ in range(self.station_amount)] for _ in range(self.station_amount)]
+        for i in range(self.station_amount):
+            distance_matrix[i][i] = 0
+
+        for station_id in self.stations.keys():
+            current_station = self.get_station(station_id)
+            stations_one_edge_way = list(current_station.next_stations.values()) + \
+                                    list(current_station.previous_stations.values())
+            while stations_one_edge_way:
+                station_one_edge_way = stations_one_edge_way.pop()
+                distance_matrix[station_id][station_one_edge_way.station_id] = 1
+
+        # Perform Floyd Warshall Algorithm
+        self.distance_matrix = floyd_warshall(distance_matrix_to_update=distance_matrix)
+
+    # endregion
+
+    # region Methods for metrolines
+    def link_metroline_to_stations(self, metroline_id, station_id_list):
+        metroline = self.get_metroline(metroline_id)
+        station_list = [self.get_station(id_) for id_ in station_id_list]
+        metroline.link(station_list)
+        self.update_distance_matrix()
+
+    # endregion
+
+    # region Methods for stations
+    def generate_station(self):
+        self.stations[self.station_amount] = Station(station_id=self.station_amount, position=self.random_position())
+        self.station_amount += 1
+
     def get_station(self, id_):
         return self.stations[id_]
 
     def get_metroline(self, id_):
         return self.metrolines[id_]
 
-    # New week arrive :
+    # endregion
+
+    # region New week arrive :
     def receive_new_train(self):
         self.train_amount += 1
 
@@ -101,30 +137,7 @@ class Map:
         else:
             self.receive_new_carriage()
             self.receive_new_tunnel()
-
-    def update_distance_matrix(self):
-        # Initialize distance matrix
-        distance_matrix = [[np.inf for _ in range(self.station_amount)] for _ in range(self.station_amount)]
-        for i in range(self.station_amount):
-            distance_matrix[i][i] = 0
-
-        for station_id in self.stations.keys():
-            current_station = self.get_station(station_id)
-            stations_one_edge_way = list(current_station.next_stations.values()) + \
-                                    list(current_station.previous_stations.values())
-            while stations_one_edge_way:
-                station_one_edge_way = stations_one_edge_way.pop()
-                distance_matrix[station_id][station_one_edge_way.station_id] = 1
-
-        # Perform Floyd Warshall Algorithm
-        self.distance_matrix = floyd_warshall(distance_matrix_to_update=distance_matrix)
-
-    # Operate metrolines
-    def link_metroline_to_stations(self, metroline_id, station_id_list):
-        metroline = self.get_metroline(metroline_id)
-        station_list = [self.get_station(id_) for id_ in station_id_list]
-        metroline.link(station_list)
-        self.update_distance_matrix()
+    # endregion
 
 
 if __name__ == '__main__':

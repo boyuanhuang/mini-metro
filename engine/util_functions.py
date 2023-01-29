@@ -1,5 +1,8 @@
 import random
 import numpy as np
+import config
+from shapely.geometry import Point
+
 
 def set_random_form(dform: dict) -> str:
     """
@@ -13,6 +16,8 @@ def set_random_form(dform: dict) -> str:
     while rand > cumul_proba_form[index]:
         index += 1
     return list(dform)[index]
+
+
 
 
 def floyd_warshall(distance_matrix_to_update):

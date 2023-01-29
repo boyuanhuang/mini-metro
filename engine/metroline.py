@@ -1,3 +1,4 @@
+
 class MetroLine:
 
     def __init__(self, metroline_id):
@@ -13,14 +14,14 @@ class MetroLine:
         self.trains = []  # [Train1, Train2, ...]
 
     def link(self, station_list):
-        '''
+        """
 
         :param station_list:
         :return: True if the linkage is possible,
                  False, if not.
                  Linkage can fail because:
                     1: station-to-link is already present on the metroline
-        '''
+        """
         if len(station_list) < 2:
             return False, 'Please give station_list with at least 2 stations'
 
@@ -60,14 +61,7 @@ class MetroLine:
             return self.link([station_to_link] + station_list)
         return True
 
-    def use_new_line(self, station_list):
-        assert len(station_list) >= 2, 'Please give station_list with at least 2 stations'
-        self.__link_first_2_stations(station_list.pop(0), station_list.pop(0))
-
-        while station_list:
-            self.__extend_end_to(station_list.pop(0))
-
-    ############### Stations linkage (private methode) ###############
+    # region Stations linkage (private methode)
     def __link_first_2_stations(self, station1, station2):
         assert not self.is_used, 'Check not self.is_used condition'
         self.head_station = station1
@@ -139,6 +133,7 @@ class MetroLine:
         station.attached_metrolines.remove(self.metroline_id)
 
         return True
+    # endregion
 
 
 if __name__ == '__main__':
