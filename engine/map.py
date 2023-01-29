@@ -1,6 +1,7 @@
 import random
 
 import numpy as np
+from engine.util_functions import floyd_warshall
 
 import config
 from station import Station
@@ -115,19 +116,23 @@ class Map:
                 station_one_edge_way = stations_one_edge_way.pop()
                 distance_matrix[station_id][station_one_edge_way.station_id] = 1
 
-        return distance_matrix
+        # Perform Floyd Warshall Algorithm
+        self.distance_matrix = floyd_warshall(distance_matrix_to_update=distance_matrix)
 
     # Operate metrolines
     def test_attach_metroline_to_station(self, metroline_id, station_id_list):
         metroline = self.get_metroline(metroline_id)
         station_list = [self.get_station(id_) for id_ in station_id_list]
-        metroline.use_new_line(station_list)
+        metroline.link(station_list)
         self.update_distance_matrix()
 
 
 if __name__ == '__main__':
     print()
     citymap = Map()
-    citymap.test_attach_metroline_to_station(metroline_id=0, station_id_list=[0, 1, 2, 0])
+    # citymap.test_attach_metroline_to_station(metroline_id=0, station_id_list=[0, 1])
+    # citymap.test_attach_metroline_to_station(metroline_id=1, station_id_list=[0, 2])
+    citymap.test_attach_metroline_to_station(metroline_id=2, station_id_list=[0, 1, 2])
+
     print(1)
     print()
