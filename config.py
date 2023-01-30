@@ -6,6 +6,10 @@ MAP_LEVEL = {1: (300, 200), 2: (400, 300), 3: (700, 500), 4: (900, 700)}
 outer = Polygon(((0, 100), (600, 100), (700, 500), (900, 500), (900, 550), (300, 550), (100, 150), (0, 150), (0, 100)))
 island = Polygon(((250, 150), (450, 150), (650, 500), (450, 500), (250, 150)))
 
+Refresh_frequence_per_day = 24  # 24 times per second
+Nnew_stations_per_week = 2
+NRefresh_in_a_week = 7 * Refresh_frequence_per_day
+
 ## Widget
 INITIAL_TUNNEL_AMOUNT = 2
 INITIAL_METROLINE_AMOUNT = 3

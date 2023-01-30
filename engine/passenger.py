@@ -4,8 +4,10 @@ from util_functions import set_random_form
 
 class Passenger:
 
-    def __init__(self):
-        self.form = set_random_form(config.PASSENGER_FORMS)
+    def __init__(self, station):
+        self.departure_station_id = station.station_id
+        self.destination_station_id = None
+        self.form = set_random_form(config.PASSENGER_FORMS, except_form=station.form)
 
 
 if __name__ == '__main__':

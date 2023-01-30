@@ -22,7 +22,7 @@ class Station:
         self.previous_stations = dict()  # {metroline_id: Station}
 
     def create_passenger(self):
-        self.passengers.append(Passenger())
+        self.passengers.append(Passenger(self))
 
     def onboard_passenger(self):
         return self.passengers.pop(0)
@@ -30,6 +30,8 @@ class Station:
     def change_station_type(self, type_):
         self.type = type_
         self.capacity = config.STATION_CAPACITY[self.type]
+
+
 
 
 # todo deprecated class, to be deleted

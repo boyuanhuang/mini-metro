@@ -9,6 +9,7 @@ class Train:
         self.passengers = []
         self.passenger_amount = 0
         self.speed = TRAIN_SPEED
+        self.is_at_station = True
 
     def add_carriage(self):
         self.carriage_amount += 1
@@ -28,3 +29,9 @@ class Train:
                 passenger_stayed_onboard.append(passenger)
         self.passengers = passenger_stayed_onboard
         self.passenger_amount -= nb_passenger_dropped
+
+    def arrive_station(self, station_provenance, station_arrival):
+        self.is_at_station = True
+
+    def leave_toward(self, station_from, station_destination):
+        self.is_at_station=False
