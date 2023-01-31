@@ -36,9 +36,26 @@ G = [[0, 3, INF, 5],
 
 floyd_warshall(G)
 
+class A:
+
+    def __init__(self):
+        self.a = 1
+        self.B = None
+
+    def update_B(self, B):
+        self.B = B
+
+class B:
+    def __init__(self, A):
+        self.b = 2
+        self.A = A
+
+
+
 
 if __name__ == '__main__':
 
-    d = {1:2, 2:3}
-    for key, val in d.items():
-        print(key, val)
+    a = A()
+    b = B(a)
+    a.update_B(b)
+    print()

@@ -61,6 +61,11 @@ class MetroLine:
             return self.link([station_to_link] + station_list)
         return True
 
+    def add_train(self, train, station):
+        train.allocate_to_metroline(self, station)
+        self.trains.append(train)
+        return True
+
     # region Stations linkage (private methode)
     def __link_first_2_stations(self, station1, station2):
         assert not self.is_used, 'Check not self.is_used condition'
@@ -80,9 +85,9 @@ class MetroLine:
         if self.is_circular:
             return False
         # Update connected Station's properties :
-        old_head_station = self.stations[0]
+        old_head_station = self.head_station
         station.next_stations[self.metroline_id] = old_head_station
-        old_head_station.previous_station[self.metroline_id] = station
+        old_head_station.previous_stations[self.metroline_id] = station
         station.attached_metrolines.append(self.metroline_id)
 
         # Update stations list
@@ -96,7 +101,7 @@ class MetroLine:
 
     def __extend_end_to(self, station):
         # Update connected Station's properties :
-        old_end_station = self.stations[-1]
+        old_end_station = self.end_station
         station.previous_stations[self.metroline_id] = old_end_station
         old_end_station.next_stations[self.metroline_id] = station
         station.attached_metrolines.append(self.metroline_id)

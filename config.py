@@ -22,7 +22,7 @@ PASSENGER_FORMS = {'circle': 0.6, 'triangle': 0.2, 'square': 0.2}
 
 # Train parameters
 CARRIAGE_CARRIAGE_CAPACITY = 6
-TRAIN_SPEED = 10
+TRAIN_SPEED = 2  # It takes '2' time_unit to travel between stations # todo varibiliser ceci
 
 # Station parameters
 INITIAL_STATION_AMOUNT = 3
