@@ -1,4 +1,3 @@
-
 # Floyd Warshall Algorithm in python
 
 
@@ -18,11 +17,12 @@ def floyd_warshall(G):
 def print_solution(distance):
     for i in range(nV):
         for j in range(nV):
-            if(distance[i][j] == INF):
+            if (distance[i][j] == INF):
                 print("INF", end=" ")
             else:
                 print(distance[i][j], end="  ")
         print(" ")
+
 
 # # The number of vertices
 nV = 4
@@ -36,6 +36,7 @@ G = [[0, 3, INF, 5],
 
 floyd_warshall(G)
 
+
 class A:
 
     def __init__(self):
@@ -45,17 +46,29 @@ class A:
     def update_B(self, B):
         self.B = B
 
+    def __del__(self):
+        print('deleting A')
+
+    def self_destruct(self):
+        del self
+
+
+
 class B:
     def __init__(self, A):
         self.b = 2
         self.A = A
 
-
+    def __del__(self):
+        print('deleting B')
 
 
 if __name__ == '__main__':
+    def test(n):
+        return n%2 == 0
 
-    a = A()
-    b = B(a)
-    a.update_B(b)
-    print()
+    if not test(2):
+        print(1)
+    else:
+        print(2)
+

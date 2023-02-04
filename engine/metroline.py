@@ -8,7 +8,7 @@ class MetroLine:
         self.head_station = None
         self.end_station = None
 
-        self.stations = []  # [stations_id_1, stations_id_2, ...]
+        self.stations = []  # [Stations_1, Stations_2, ...]
 
         # Trains on this Metroline
         self.trains = []  # [Train1, Train2, ...]

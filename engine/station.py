@@ -7,13 +7,12 @@ from engine.passenger import Passenger
 
 class Station:
 
-    def __init__(self, station_id, position):
+    def __init__(self, station_id, position, form=None):
         self.station_id = station_id
         self.position = position
-        self.form = set_random_form(config.STATION_FORMS)
+        self.form = form if form else set_random_form(config.STATION_FORMS)
         self.type = 'Normal'
         self.capacity = config.STATION_CAPACITY[self.type]
-        self.timer = None
         self.passengers = []
         self.attached_metrolines = []
 
@@ -23,8 +22,8 @@ class Station:
         # A station may have several previous-stations connected by different metrolines
         self.previous_stations = dict()  # {metroline_id: Station}
 
-    def create_passenger(self, transit_matrix):
-        new_passenger = Passenger(self, transit_matrix)
+    def create_passenger(self):
+        new_passenger = Passenger(self)
         self.passengers.append(new_passenger)
         return new_passenger
 
@@ -45,6 +44,13 @@ class Station:
         if metroline.metroline_id in self.next_stations.keys():
             return self.next_stations[metroline.metroline_id]
         return False
+
+    def get_passenger_form(self):
+        return [p_.form for p_ in self.passengers]
+
+    def is_gameover(self):
+        """If a Station has more passengers than its capacity, the game is over"""
+        return len(self.passengers) >= self.capacity
 
 
 # todo deprecated class, to be deleted

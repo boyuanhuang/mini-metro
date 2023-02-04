@@ -1,14 +1,19 @@
 import numpy as np
 from shapely.geometry import Polygon
 
+# General settings
+Status = 'dev'
+
 # Map parameters
 MAP_LEVEL = {1: (300, 200), 2: (400, 300), 3: (700, 500), 4: (900, 700)}
 outer = Polygon(((0, 100), (600, 100), (700, 500), (900, 500), (900, 550), (300, 550), (100, 150), (0, 150), (0, 100)))
 island = Polygon(((250, 150), (450, 150), (650, 500), (450, 500), (250, 150)))
 
-Refresh_frequence_per_day = 24  # 24 times per second
+# Time parameters
+Refresh_frequence_per_day = 24  # 24 hours in a day
 Nnew_stations_per_week = 2
 NRefresh_in_a_week = 7 * Refresh_frequence_per_day
+Week_day = {1: "Mon", 2: "Tue", 3: "Wed", 4: "Thu", 5: "Fri", 6: "Sat", 0: "Sun"}
 
 ## Widget
 INITIAL_TUNNEL_AMOUNT = 2
@@ -22,7 +27,7 @@ PASSENGER_FORMS = {'circle': 0.6, 'triangle': 0.2, 'square': 0.2}
 
 # Train parameters
 CARRIAGE_CARRIAGE_CAPACITY = 6
-TRAIN_SPEED = 2  # It takes '2' time_unit to travel between stations # todo varibiliser ceci
+TRAIN_SPEED = 20  # It takes '2' time_unit to travel between stations # todo varibiliser ceci
 
 # Station parameters
 INITIAL_STATION_AMOUNT = 3

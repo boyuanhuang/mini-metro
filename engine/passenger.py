@@ -4,18 +4,29 @@ from util_functions import set_random_form
 
 class Passenger:
 
-    def __init__(self, station, transit_path):
+    def __init__(self, station, transit_path=None):
         self.form = set_random_form(config.PASSENGER_FORMS, except_form=station.form)
         self.transit_path = transit_path
-        self.initial_station_id = transit_path[0]
-        self.current_station_id = transit_path[0]
-        self.next_station_id_to_go = transit_path[1]
-        self.destination_station_id = transit_path[-1]
+        self.initial_station_id = station.station_id
+        self.current_station_id = station.station_id
+        self.next_station_id_to_go = None # todo
+        self.destination_station_id = None # todo
         self.is_on_the_train = False
+        self.reach_destination = False
 
-    def update_path(self, transit_path):
-        self.transit_path = transit_path
-        self.next_station_id_to_go = transit_path[transit_path.index(self.current_station_id)+1]
+    def update_path(self, transit_path=None):
+        if transit_path:
+            self.transit_path = transit_path
+        self.next_station_id_to_go = self.transit_path[self.transit_path.index(self.current_station_id)+1]
+        self.destination_station_id = self.transit_path[-1]
+
+    def passenger_arrive_to_station(self, station):
+        if self.form == station.form:
+            self.reach_destination = True
+        self.current_station_id = station.station_id
+
+
+
 
 
 if __name__ == '__main__':
